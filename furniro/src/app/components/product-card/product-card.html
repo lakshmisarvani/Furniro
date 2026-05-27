@@ -1,0 +1,67 @@
+<div class="group relative cursor-pointer"
+  (mouseenter)="hovered = true"
+  (mouseleave)="hovered = false">
+  <div class="relative overflow-hidden bg-bg-light">
+    <a [routerLink]="['/shop', product.id]">
+      <img [src]="product.image" [alt]="product.name"
+        class="w-full h-[301px] object-cover transition-all duration-500 group-hover:brightness-75 group-hover:scale-105" />
+    </a>
+
+    @if (product.badge) {
+      <span class="absolute top-4 right-4 text-white text-xs font-semibold px-3 py-1 rounded-full z-10 transition-transform duration-300"
+        [ngClass]="product.badge === 'New' ? 'bg-badge-new' : 'bg-badge-sale'">
+        {{ product.badgePercent || product.badge }}
+      </span>
+    }
+
+    <div class="absolute inset-0 flex flex-col items-center justify-center gap-4 transition-opacity duration-300"
+      [ngClass]="hovered ? 'opacity-100' : 'opacity-0 pointer-events-none'">
+
+      <button (click)="addToCart($event)"
+        class="font-semibold px-8 py-3 text-sm transition-all duration-200 transform"
+        [ngClass]="addedToCart
+          ? 'bg-primary text-white scale-105'
+          : 'bg-white text-primary hover:bg-primary hover:text-white'">
+        {{ addedToCart ? '✓ Added!' : 'Add to cart' }}
+      </button>
+
+      <div class="flex items-center gap-5 text-white text-xs font-medium">
+        <button class="flex items-center gap-1 hover:text-primary-light transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m9.632 4.684a3 3 0 11-2.684-9.316"/>
+          </svg>
+          Share
+        </button>
+        <button (click)="toggleCompare($event)"
+          class="flex items-center gap-1 transition-colors"
+          [ngClass]="isComparing ? 'text-primary-light' : 'hover:text-primary-light'">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+          </svg>
+          {{ isComparing ? 'Comparing' : 'Compare' }}
+        </button>
+        <button (click)="toggleWishlist($event)"
+          class="flex items-center gap-1 transition-colors"
+          [ngClass]="isWishlisted ? 'text-badge-sale' : 'hover:text-primary-light'">
+          <svg class="w-4 h-4" [attr.fill]="isWishlisted ? 'currentColor' : 'none'" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+          </svg>
+          {{ isWishlisted ? 'Liked' : 'Like' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-bg-light px-4 py-5">
+    <a [routerLink]="['/shop', product.id]">
+      <h3 class="text-text-dark font-semibold text-base hover:text-primary transition-colors duration-200">{{ product.name }}</h3>
+    </a>
+    <p class="text-text-gray text-sm mb-2">{{ product.subtitle }}</p>
+    <div class="flex items-center gap-4">
+      <span class="text-text-dark font-semibold">{{ formatPrice(product.price) }}</span>
+      @if (product.originalPrice) {
+        <span class="text-text-light text-sm line-through">{{ formatPrice(product.originalPrice) }}</span>
+      }
+    </div>
+  </div>
+</div>

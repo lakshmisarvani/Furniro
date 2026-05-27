@@ -1,0 +1,15 @@
+<div class="flex items-center gap-3">
+  @for (item of items; track item.label; let last = $last) {
+    @if (!last) {
+      <a [routerLink]="item.link"
+        class="text-text-gray text-base hover:text-primary transition-colors duration-200">
+        {{ item.label }}
+      </a>
+      <svg class="w-5 h-5 text-text-dark flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+      </svg>
+    } @else {
+      <span class="text-text-dark font-medium text-base">{{ item.label }}</span>
+    }
+  }
+</div>

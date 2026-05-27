@@ -1,0 +1,122 @@
+<nav class="bg-white sticky top-0 z-50 shadow-sm">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <a routerLink="/" class="flex items-center gap-2">
+      <img src="assets/images/logo.png" alt="Furniro Logo" class="h-10 w-auto" />
+      <span class="text-2xl font-bold text-text-dark tracking-wide">Furniro</span>
+    </a>
+
+    <ul class="hidden md:flex items-center gap-12">
+      <li>
+        <a routerLink="/" routerLinkActive="font-semibold" [routerLinkActiveOptions]="{exact:true}"
+          class="text-text-dark hover:text-primary transition-colors duration-200 text-sm font-medium">
+          Home
+        </a>
+      </li>
+      <li>
+        <a routerLink="/shop" routerLinkActive="font-semibold"
+          class="text-text-dark hover:text-primary transition-colors duration-200 text-sm font-medium">
+          Shop
+        </a>
+      </li>
+      <li>
+        <a routerLink="/blog" routerLinkActive="font-semibold"
+          class="text-text-dark hover:text-primary transition-colors duration-200 text-sm font-medium">
+          Blog
+        </a>
+      </li>
+      <li>
+        <a routerLink="/contact" routerLinkActive="font-semibold"
+          class="text-text-dark hover:text-primary transition-colors duration-200 text-sm font-medium">
+          Contact
+        </a>
+      </li>
+    </ul>
+
+    <div class="flex items-center gap-6">
+
+      <!-- User area -->
+      @if (isLoggedIn) {
+        <!-- Logged in: avatar + dropdown -->
+        <div class="relative">
+          <button (click)="toggleUserMenu()"
+            class="flex items-center gap-2 text-text-dark hover:text-primary transition-colors duration-200">
+            <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-semibold uppercase">
+              {{ currentUser?.name?.charAt(0) ?? 'U' }}
+            </div>
+            <span class="hidden md:block text-sm font-medium max-w-[100px] truncate">{{ currentUser?.name }}</span>
+            <svg class="w-3 h-3 transition-transform duration-200" [class.rotate-180]="userMenuOpen"
+              fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+
+          @if (userMenuOpen) {
+            <!-- Backdrop -->
+            <div class="fixed inset-0 z-40" (click)="closeUserMenu()"></div>
+            <!-- Dropdown -->
+            <div class="absolute right-0 mt-2 w-44 bg-white rounded-xl shadow-lg border border-gray-100 z-50 py-1 text-sm">
+              <div class="px-4 py-2 border-b border-gray-100">
+                <p class="font-semibold text-text-dark truncate">{{ currentUser?.name }}</p>
+                <p class="text-text-gray text-xs truncate">{{ currentUser?.email }}</p>
+              </div>
+              <button (click)="logout()"
+                class="w-full text-left px-4 py-2.5 text-red-500 hover:bg-red-50 transition-colors flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                </svg>
+                Logout
+              </button>
+            </div>
+          }
+        </div>
+      } @else {
+        <!-- Not logged in: Login + Register links -->
+        <div class="flex items-center gap-3">
+          <a routerLink="/login"
+            class="text-sm font-medium text-text-dark hover:text-primary transition-colors duration-200">
+            Login
+          </a>
+          <a routerLink="/register"
+            class="text-sm font-semibold bg-primary text-white px-4 py-1.5 rounded-lg hover:bg-primary/90 transition-colors duration-200">
+            Register
+          </a>
+        </div>
+      }
+
+      <!-- Search icon -->
+      <button class="text-text-dark hover:text-primary transition-colors duration-200">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </button>
+
+      <!-- Wishlist icon -->
+      <button (click)="openWishlist()" class="relative text-text-dark hover:text-primary transition-colors duration-200">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+        </svg>
+        @if (wishlistCount > 0) {
+          <span class="absolute -top-2 -right-2 bg-primary text-white text-xs w-4 h-4 rounded-full flex items-center justify-center font-bold leading-none">
+            {{ wishlistCount > 9 ? '9+' : wishlistCount }}
+          </span>
+        }
+      </button>
+
+      <!-- Cart icon -->
+      <button (click)="openCart()" class="relative text-text-dark hover:text-primary transition-colors duration-200">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+        @if (cartCount > 0) {
+          <span class="absolute -top-2 -right-2 bg-primary text-white text-xs w-4 h-4 rounded-full flex items-center justify-center font-bold leading-none">
+            {{ cartCount > 9 ? '9+' : cartCount }}
+          </span>
+        }
+      </button>
+    </div>
+  </div>
+</nav>

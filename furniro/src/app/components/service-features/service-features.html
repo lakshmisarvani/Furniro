@@ -1,0 +1,17 @@
+<section class="py-16 bg-bg-light">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+      @for (f of features; track f.title) {
+        <div class="flex items-start gap-4 group">
+          <div class="text-text-dark flex-shrink-0 group-hover:text-primary transition-colors duration-300"
+            [innerHTML]="f.icon">
+          </div>
+          <div>
+            <h4 class="text-text-dark font-semibold text-base">{{ f.title }}</h4>
+            <p class="text-text-gray text-sm mt-1">{{ f.subtitle }}</p>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>

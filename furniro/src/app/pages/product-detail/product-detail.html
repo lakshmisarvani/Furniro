@@ -1,0 +1,259 @@
+@if (product) {
+
+<div class="bg-bg-light py-5">
+  <div class="max-w-7xl mx-auto px-6">
+    <app-breadcrumb [items]="breadcrumbs" />
+  </div>
+</div>
+
+<section class="py-14 bg-white">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="flex flex-col lg:flex-row gap-14">
+      <div class="flex gap-4">
+        <div class="flex flex-col gap-4 w-20 flex-shrink-0">
+          @for (img of product.images; track img; let i = $index) {
+            <button (click)="selectedImage = i"
+              class="w-20 h-20 overflow-hidden rounded-sm border-2 transition-all duration-200"
+              [ngClass]="selectedImage === i ? 'border-primary' : 'border-transparent hover:border-primary-light'">
+              <img [src]="img" [alt]="product.name + ' ' + i"
+                class="w-full h-full object-cover" />
+            </button>
+          }
+        </div>
+
+        <div class="flex-1 bg-bg-light rounded-sm overflow-hidden" style="width: 423px; height: 500px;">
+          <img [src]="currentImage" [alt]="product.name"
+            class="w-full h-full object-cover transition-all duration-500 hover:scale-105" />
+        </div>
+      </div>
+
+      <div class="flex-1 max-w-xl">
+        <h1 class="text-3xl font-semibold text-text-dark mb-2">{{ product.name }}</h1>
+        <p class="text-2xl text-text-gray font-medium mb-4">{{ formatPrice(product.price) }}</p>
+        <div class="flex items-center gap-3 mb-6">
+          <div class="flex gap-0.5">
+            @for (s of stars(product.rating); track s) {
+              <svg class="w-5 h-5 transition-colors duration-200"
+                [ngClass]="s < (product.rating ?? 0) ? 'text-yellow-400' : 'text-border-light'"
+                fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+              </svg>
+            }
+          </div>
+          <span class="text-text-gray text-sm">{{ product.reviewCount }} customer reviews</span>
+        </div>
+
+        <p class="text-text-dark text-sm leading-relaxed mb-6">{{ product.description }}</p>
+        @if (product.sizes?.length) {
+          <div class="mb-5">
+            <p class="text-text-gray text-sm font-medium mb-3">Size</p>
+            <div class="flex gap-3">
+              @for (size of product.sizes; track size) {
+                <button (click)="selectedSize = size"
+                  class="px-4 py-2 text-sm font-medium rounded-sm border transition-all duration-200"
+                  [ngClass]="selectedSize === size
+                    ? 'bg-primary text-white border-primary'
+                    : 'bg-bg-light text-text-dark border-transparent hover:border-primary'">
+                  {{ size }}
+                </button>
+              }
+            </div>
+          </div>
+        }
+
+        @if (product.colors?.length) {
+          <div class="mb-8">
+            <p class="text-text-gray text-sm font-medium mb-3">Color</p>
+            <div class="flex gap-3">
+              @for (color of product.colors; track color) {
+                <button (click)="selectedColor = color"
+                  class="w-8 h-8 rounded-full border-2 transition-all duration-200 hover:scale-110"
+                  [style.background-color]="color"
+                  [ngClass]="selectedColor === color ? 'border-text-dark scale-110' : 'border-transparent'">
+                </button>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Quantity + CTA -->
+        <div class="flex flex-wrap items-center gap-4 mb-8">
+          <div class="flex items-center border border-border-light rounded-sm">
+            <button (click)="changeQty(-1)"
+              class="w-10 h-12 flex items-center justify-center text-text-dark hover:text-primary transition-colors duration-200 text-lg font-light">
+              −
+            </button>
+            <span class="w-10 h-12 flex items-center justify-center text-text-dark font-medium">{{ quantity }}</span>
+            <button (click)="changeQty(1)"
+              class="w-10 h-12 flex items-center justify-center text-text-dark hover:text-primary transition-colors duration-200 text-lg font-light">
+              +
+            </button>
+          </div>
+
+          <button (click)="addToCart()"
+            class="flex-1 border py-3 px-8 text-sm font-semibold transition-all duration-300 rounded-sm"
+            [ngClass]="addedToCart
+              ? 'bg-primary border-primary text-white'
+              : 'border-text-dark text-text-dark hover:bg-text-dark hover:text-white'">
+            {{ addedToCart ? '✓ Added to Cart!' : 'Add To Cart' }}
+          </button>
+          <button (click)="toggleCompare()"
+            class="border py-3 px-8 text-sm font-semibold transition-all duration-300 rounded-sm flex items-center gap-2"
+            [ngClass]="isComparing
+              ? 'bg-text-dark border-text-dark text-white'
+              : 'border-text-dark text-text-dark hover:bg-text-dark hover:text-white'">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+            </svg>
+            {{ isComparing ? 'Comparing' : 'Compare' }}
+          </button>
+        </div>
+
+        <!-- Divider -->
+        <div class="border-t border-border-light pt-6 space-y-2">
+          <div class="flex gap-4 text-sm">
+            <span class="text-text-light w-20">SKU</span>
+            <span class="text-text-gray">: {{ product.sku }}</span>
+          </div>
+          <div class="flex gap-4 text-sm">
+            <span class="text-text-light w-20">Category</span>
+            <span class="text-text-gray">: {{ product.category }}</span>
+          </div>
+          <div class="flex gap-4 text-sm">
+            <span class="text-text-light w-20">Tags</span>
+            <span class="text-text-gray">: {{ product.tags?.join(', ') }}</span>
+          </div>
+          <div class="flex items-center gap-4 text-sm">
+            <span class="text-text-light w-20">Share</span>
+            <div class="flex items-center gap-3">
+              <span class="text-text-gray">:</span>
+              <!-- Facebook -->
+              <button class="text-text-dark hover:text-primary transition-colors duration-200">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/>
+                </svg>
+              </button>
+              <!-- LinkedIn -->
+              <button class="text-text-dark hover:text-primary transition-colors duration-200">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z M4 6a2 2 0 100-4 2 2 0 000 4z"/>
+                </svg>
+              </button>
+              <!-- Twitter -->
+              <button class="text-text-dark hover:text-primary transition-colors duration-200">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== TABS: Description / Additional / Reviews ====== -->
+<section class="py-12 bg-white border-t border-border-light">
+  <div class="max-w-7xl mx-auto px-6">
+    <!-- Tab Nav -->
+    <div class="flex items-center justify-center gap-12 mb-10">
+      @for (tab of tabs; track tab.key) {
+        <button (click)="activeTab = tab.key"
+          class="text-base font-medium pb-3 border-b-2 transition-all duration-200"
+          [ngClass]="activeTab === tab.key
+            ? 'text-text-dark border-text-dark'
+            : 'text-text-gray border-transparent hover:text-text-dark'">
+          @if (tab.key === 'reviews') {
+            Reviews [{{ product.reviewCount }}]
+          } @else {
+            {{ tab.label }}
+          }
+        </button>
+      }
+    </div>
+
+    <!-- Tab Content -->
+    @if (activeTab === 'description') {
+      <div class="max-w-4xl mx-auto">
+        <p class="text-text-gray text-sm leading-relaxed mb-4">{{ product.description }}</p>
+        <p class="text-text-gray text-sm leading-relaxed mb-10">
+          Weighing in under 7 pounds, the Kilburn is a lightweight piece of vintage inspired engineering.
+          Being the bar one of the loudest speakers in its class, the Kilburn is a compact, heated bass
+          with a wall-balanced cushion that creates a clear massage and extended highs for a sound that
+          is both articulate and pronounced.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-bg-light rounded-sm overflow-hidden">
+            <img src="https://picsum.photos/seed/prodimg1/600/360" alt="Product detail"
+              class="w-full h-64 object-cover" />
+          </div>
+          <div class="bg-bg-light rounded-sm overflow-hidden">
+            <img src="https://picsum.photos/seed/prodimg2/600/360" alt="Product detail"
+              class="w-full h-64 object-cover" />
+          </div>
+        </div>
+      </div>
+    }
+
+    @if (activeTab === 'additional') {
+      <div class="max-w-2xl mx-auto">
+        <table class="w-full text-sm">
+          <tr class="border-b border-border-light">
+            <td class="py-3 pr-8 text-text-gray font-medium w-40">Weight</td>
+            <td class="py-3 text-text-dark">4 kg</td>
+          </tr>
+          <tr class="border-b border-border-light">
+            <td class="py-3 pr-8 text-text-gray font-medium">Dimensions</td>
+            <td class="py-3 text-text-dark">165 × 82 × 86 cm</td>
+          </tr>
+          <tr class="border-b border-border-light">
+            <td class="py-3 pr-8 text-text-gray font-medium">Color</td>
+            <td class="py-3 text-text-dark">{{ product.colors?.join(', ') }}</td>
+          </tr>
+          <tr>
+            <td class="py-3 pr-8 text-text-gray font-medium">Material</td>
+            <td class="py-3 text-text-dark">Premium Wood &amp; Fabric</td>
+          </tr>
+        </table>
+      </div>
+    }
+
+    @if (activeTab === 'reviews') {
+      <div class="max-w-2xl mx-auto text-center text-text-gray py-8">
+        <p class="text-lg mb-2">{{ product.reviewCount }} Customer Reviews</p>
+        <p class="text-sm">No reviews yet. Be the first to review this product.</p>
+      </div>
+    }
+  </div>
+</section>
+
+<!-- ====== RELATED PRODUCTS ====== -->
+<section class="py-14 bg-white">
+  <div class="max-w-7xl mx-auto px-6">
+    <h2 class="text-3xl font-bold text-text-dark text-center mb-10">Related Products</h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+      @for (p of relatedProducts; track p.id) {
+        <app-product-card [product]="p" />
+      }
+    </div>
+    <div class="text-center mt-10">
+      <a routerLink="/shop"
+        class="inline-block border border-primary text-primary px-16 py-3 text-sm font-semibold hover:bg-primary hover:text-white transition-all duration-300">
+        Show More
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ====== SERVICE FEATURES ====== -->
+<app-service-features />
+
+} @else {
+  <div class="flex items-center justify-center h-96">
+    <div class="text-center">
+      <p class="text-text-gray text-lg mb-4">Product not found</p>
+      <a routerLink="/shop" class="text-primary hover:underline">Back to Shop</a>
+    </div>
+  </div>
+}

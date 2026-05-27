@@ -1,0 +1,6 @@
+[
+  { "id": 1, "room": "01 — Bed Room", "title": "Inner Peace", "image": "assets/images/bedroom.png" },
+  { "id": 2, "room": "02 — Living Room", "title": "Modern Serenity", "image": "assets/images/living.png" },
+  { "id": 3, "room": "03 — Dining Room", "title": "Warm Gatherings", "image": "assets/images/dining.png" },
+  { "id": 4, "room": "04 — Home Office", "title": "Focused Calm", "image": "assets/images/pingky.png" }
+]

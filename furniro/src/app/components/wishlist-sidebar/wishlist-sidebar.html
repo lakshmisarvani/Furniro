@@ -1,0 +1,62 @@
+@if (isOpen) {
+  <div class="fixed inset-0 z-40" (click)="close()"></div>
+}
+<div class="fixed top-[72px] right-0 w-[380px] max-h-[calc(100vh-80px)] bg-white z-50 shadow-2xl flex flex-col transition-transform duration-300 ease-in-out"
+  [ngClass]="isOpen ? 'translate-x-0' : 'translate-x-full'">
+  <div class="flex items-center justify-between px-8 pt-8 pb-6 border-b border-border-light flex-shrink-0">
+    <h2 class="text-2xl font-semibold text-text-dark">Wishlist</h2>
+    <button (click)="close()"
+      class="w-8 h-8 rounded-full border border-text-gray flex items-center justify-center hover:border-primary hover:text-primary transition-colors duration-200 text-text-gray">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="flex-1 overflow-y-auto px-8 py-6 space-y-6">
+    @if (products.length === 0) {
+      <div class="flex flex-col items-center justify-center h-40 text-text-gray">
+        <svg class="w-12 h-12 mb-3 text-border-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+        </svg>
+        <p class="text-sm">Your wishlist is empty</p>
+      </div>
+    }
+
+    @for (product of products; track product.id) {
+      <div class="flex items-center gap-4 group">
+        <button (click)="navigate('/shop/' + product.id)"
+          class="w-24 h-24 bg-bg-light rounded-sm overflow-hidden flex-shrink-0 hover:opacity-90 transition-opacity duration-200">
+          <img [src]="product.image" [alt]="product.name" class="w-full h-full object-cover" />
+        </button>
+        <div class="flex-1 min-w-0">
+          <button (click)="navigate('/shop/' + product.id)"
+            class="text-text-dark font-semibold text-sm leading-snug hover:text-primary transition-colors duration-200 text-left line-clamp-2">
+            {{ product.name }}
+          </button>
+          <p class="text-primary font-medium text-sm mt-1">{{ fmt(product.price) }}</p>
+          @if (product.originalPrice) {
+            <p class="text-text-light text-xs line-through">{{ fmt(product.originalPrice) }}</p>
+          }
+        </div>
+        <button (click)="remove(product.id)"
+          class="w-6 h-6 rounded-full border border-text-gray flex items-center justify-center flex-shrink-0 hover:border-badge-sale hover:text-badge-sale transition-colors duration-200 text-text-gray opacity-0 group-hover:opacity-100">
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+    }
+  </div>
+  @if (products.length > 0) {
+    <div class="px-8 py-6 border-t border-border-light flex-shrink-0">
+      <div class="flex items-center justify-between mb-4">
+        <span class="text-text-gray text-sm">{{ products.length }} item{{ products.length !== 1 ? 's' : '' }} saved</span>
+      </div>
+      <button (click)="navigate('/shop')"
+        class="w-full border border-text-dark text-text-dark text-sm font-medium py-3 rounded-full hover:bg-text-dark hover:text-white transition-all duration-200">
+        Continue Shopping
+      </button>
+    </div>
+  }
+</div>

@@ -1,0 +1,27 @@
+:host {
+  display: block;
+  width: 100%;
+  overflow-x: hidden; /* Prevents horizontal scroll from edge images */
+}
+
+/* On standard laptops (13" to 15"), we scale down slightly 
+   to ensure the 'wall' feel is maintained without being overwhelming */
+@media (max-width: 1440px) {
+  .relative {
+    transform: scale(0.85);
+    transform-origin: center;
+  }
+}
+
+/* On smaller desktops or tablets in landscape */
+@media (max-width: 1024px) {
+  .relative {
+    transform: scale(0.7);
+  }
+}
+
+/* Ensure images maintain quality while being responsive */
+img {
+  transition: transform 0.3s ease;
+  display: block;
+}
