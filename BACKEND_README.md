@@ -5,7 +5,7 @@
 ## 📌 Project Overview
 
 A production-ready RESTful API backend for the **Furniro** furniture eCommerce platform. Built with Node.js, Express, MongoDB, and TypeScript. Supports full eCommerce functionality: authentication, product browsing, cart management, wishlist, and order processing.
-
+ 
 ---
 
 ## 🛠 Tech Stack
